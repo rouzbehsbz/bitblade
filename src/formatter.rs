@@ -1,4 +1,4 @@
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Color {
     Black,
     Red,
@@ -11,44 +11,44 @@ pub enum Color {
 }
 
 impl Color {
-    fn get_foreground_ansi_escape_code(&self) -> u8 {
+    pub fn to_foreground_ansi_escape_code(&self) -> &str {
         match *self {
-            Self::Black => 30,
-            Self::Red => 31,
-            Self::Green => 32,
-            Self::Yellow => 33,
-            Self::Blue => 34,
-            Self::Magenta => 35,
-            Self::Cyan => 36,
-            Self::White => 37,
+            Self::Black => "\x1B[30m",
+            Self::Red => "\x1B[31m",
+            Self::Green => "\x1B[32m",
+            Self::Yellow => "\x1B[33m",
+            Self::Blue => "\x1B[34m",
+            Self::Magenta => "\x1B[35m",
+            Self::Cyan => "\x1B[36m",
+            Self::White => "\x1B[37m",
         }
     }
 
-    fn get_background_ansi_escape_code(&self) -> u8 {
+    pub fn to_background_ansi_escape_code(&self) -> &str {
         match *self {
-            Self::Black => 40,
-            Self::Red => 41,
-            Self::Green => 42,
-            Self::Yellow => 43,
-            Self::Blue => 44,
-            Self::Magenta => 45,
-            Self::Cyan => 46,
-            Self::White => 47,
+            Self::Black => "\x1B[40m",
+            Self::Red => "\x1B[41m",
+            Self::Green => "\x1B[42m",
+            Self::Yellow => "\x1B[43m",
+            Self::Blue => "\x1B[44m",
+            Self::Magenta => "\x1B[45m",
+            Self::Cyan => "\x1B[46m",
+            Self::White => "\x1B[47m",
         }
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Style {
     Normal,
     Bold,
 }
 
 impl Style {
-    fn get_ansi_escape_code(&self) -> u8 {
+    pub fn to_ansi_escape_code(&self) -> &str {
         match *self {
-            Self::Normal => 22,
-            Self::Bold => 1,
+            Self::Normal => "\x1B[22m",
+            Self::Bold => "\x1B[1m",
         }
     }
 }

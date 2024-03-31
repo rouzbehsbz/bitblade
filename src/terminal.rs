@@ -5,12 +5,27 @@ use crate::{
     space::Vec2,
 };
 
+const NEW_LINE_CHARACTER: char = '\n';
+const CLEAR_SCREEN_ANSI_ESCAPE_STR: &str = "\x1B[2J";
+const MOVE_CURSOR_TO_ORIGIN_ANSI_ESCAPE_STR: &str = "\x1B[1;1H";
+
 #[derive(Clone, Copy)]
 pub struct Element {
     value: char,
     style: Style,
     background: Color,
     foreground: Color,
+}
+
+impl Default for Element {
+    fn default() -> Self {
+        Self {
+            value: ' ',
+            style: Style::Normal,
+            background: Color::Black,
+            foreground: Color::White,
+        }
+    }
 }
 
 pub struct Canvas {
@@ -44,6 +59,7 @@ struct View<W>
 where
     W: Write,
 {
+    last_element: Element,
     target: BufWriter<W>,
 }
 
@@ -54,11 +70,22 @@ where
     fn new(target: W) -> Self {
         Self {
             target: BufWriter::new(target),
+            last_element: Element::default(),
         }
     }
 
     fn write_element(&mut self, element: &Element) -> Result<usize> {
-        self.write_str(element.style.to_ansi_escape_code())
+        if self.last_element.background != element.background {
+            self.write_str(element.background.to_background_ansi_escape_code())?;
+        }
+        if self.last_element.foreground != element.foreground {
+            self.write_str(element.background.to_foreground_ansi_escape_code())?;
+        }
+        if self.last_element.style != element.style {
+            self.write_str(element.style.to_ansi_escape_code())?;
+        }
+
+        self.write_char(element.value)
     }
 
     fn write_char(&mut self, character: char) -> Result<usize> {
@@ -71,6 +98,10 @@ where
         let byte_format = string.as_bytes();
 
         self.target.write(byte_format)
+    }
+
+    fn flush(&mut self) -> Result<()> {
+        self.target.flush()
     }
 }
 
@@ -91,7 +122,10 @@ where
     }
 
     pub fn clear(&mut self) -> Result<()> {
-        todo!()
+        self.view.write_str(CLEAR_SCREEN_ANSI_ESCAPE_STR)?;
+        self.view.write_str(MOVE_CURSOR_TO_ORIGIN_ANSI_ESCAPE_STR)?;
+
+        self.view.flush()
     }
 
     pub fn draw(&mut self) -> Result<()> {
@@ -102,10 +136,14 @@ where
             for column in 0..columns {
                 let cell = self.canvas.get_cell(Vec2(column, row));
 
-                if let Some(element) = cell {}
+                if let Some(element) = cell {
+                    self.view.write_element(element)?;
+                }
             }
+
+            self.view.write_char(NEW_LINE_CHARACTER)?;
         }
 
-        Ok(())
+        self.view.flush()
     }
 }
