@@ -1,4 +1,5 @@
 use std::{
+    io::Result,
     ops::Sub,
     thread,
     time::{Duration, Instant},
@@ -38,7 +39,7 @@ impl Engine {
         Self { config, window }
     }
 
-    pub fn run<F>(&mut self, mut tick_update: F)
+    pub fn run<F>(&mut self, mut tick_update: F) -> Result<()>
     where
         F: FnMut(&mut Window),
     {
@@ -51,6 +52,9 @@ impl Engine {
             last_time = Instant::now();
 
             tick_update(&mut self.window);
+
+            self.window.clear()?;
+            self.window.draw()?;
 
             let sleep_time = tick_rate_duration
                 .checked_sub(elapsed_time)
