@@ -1,10 +1,16 @@
-use std::io::{BufWriter, Write};
+use std::io::{BufWriter, Result, Write};
 
-use crate::space::Vec2;
+use crate::{
+    formatter::{Color, Style},
+    space::Vec2,
+};
 
 #[derive(Clone, Copy)]
 pub struct Element {
     value: char,
+    style: Style,
+    background: Color,
+    foreground: Color,
 }
 
 pub struct Canvas {
@@ -50,6 +56,22 @@ where
             target: BufWriter::new(target),
         }
     }
+
+    fn write_element(&mut self, element: &Element) -> Result<usize> {
+        self.write_str(element.style.to_ansi_escape_code())
+    }
+
+    fn write_char(&mut self, character: char) -> Result<usize> {
+        let byte_format: u8 = character as u8;
+
+        self.target.write(&[byte_format])
+    }
+
+    fn write_str(&mut self, string: &str) -> Result<usize> {
+        let byte_format = string.as_bytes();
+
+        self.target.write(byte_format)
+    }
 }
 
 pub struct Window<W>
@@ -68,7 +90,11 @@ where
         Self { canvas, view }
     }
 
-    pub fn draw(&self) {
+    pub fn clear(&mut self) -> Result<()> {
+        todo!()
+    }
+
+    pub fn draw(&mut self) -> Result<()> {
         let columns = self.canvas.dimension.0;
         let rows = self.canvas.dimension.1;
 
@@ -79,5 +105,7 @@ where
                 if let Some(element) = cell {}
             }
         }
+
+        Ok(())
     }
 }
