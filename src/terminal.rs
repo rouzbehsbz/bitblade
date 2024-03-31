@@ -11,10 +11,10 @@ const MOVE_CURSOR_TO_ORIGIN_ANSI_ESCAPE_STR: &str = "\x1B[1;1H";
 
 #[derive(Clone, Copy)]
 pub struct Element {
-    value: char,
-    style: Style,
-    background: Color,
-    foreground: Color,
+    pub value: char,
+    pub style: Style,
+    pub background: Color,
+    pub foreground: Color,
 }
 
 impl Default for Element {
@@ -30,16 +30,21 @@ impl Default for Element {
 
 pub struct Canvas {
     cells: Vec<Element>,
+    default_element: Element,
     dimension: Vec2,
 }
 
 impl Canvas {
-    fn new(dimension: Vec2, default_element: Element) -> Self {
+    fn new(dimension: Vec2, default_element: &Element) -> Self {
         let mut cells = Vec::new();
 
-        cells.resize((dimension.0 * dimension.1) as usize, default_element);
+        cells.resize((dimension.0 * dimension.1) as usize, *default_element);
 
-        Self { cells, dimension }
+        Self {
+            cells,
+            dimension,
+            default_element: *default_element,
+        }
     }
 
     fn is_cell_exists(&self, pos: Vec2) -> bool {
@@ -52,6 +57,18 @@ impl Canvas {
         } else {
             None
         }
+    }
+
+    pub fn get_cell_mut(&mut self, pos: Vec2) -> Option<&mut Element> {
+        if self.is_cell_exists(pos) {
+            Some(&mut self.cells[(pos.1 * self.dimension.0 + pos.0) as usize])
+        } else {
+            None
+        }
+    }
+
+    pub fn get_default_element(&self) -> &Element {
+        &self.default_element
     }
 }
 
