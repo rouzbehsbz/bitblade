@@ -23,42 +23,66 @@ impl<'a> Painter<'a> {
         }
     }
 
-    pub fn set_origin(&'a mut self, pos: Vec2) -> &'a mut Self {
+    pub fn set_origin(&mut self, pos: Vec2) -> &mut Self {
         self.origin = pos;
 
         self
     }
 
-    pub fn set_style(&'a mut self, style: Style) -> &'a mut Self {
+    pub fn reset_origin(&mut self) -> &mut Self {
+        self.origin = Vec2::zero();
+
+        self
+    }
+
+    pub fn set_style(&mut self, style: Style) -> &mut Self {
         self.style = style;
 
         self
     }
 
-    pub fn set_background(&'a mut self, color: Color) -> &'a mut Self {
+    pub fn set_background(&mut self, color: Color) -> &mut Self {
         self.background = color;
 
         self
     }
 
-    pub fn set_foreground(&'a mut self, color: Color) -> &'a mut Self {
+    pub fn set_foreground(&mut self, color: Color) -> &mut Self {
         self.foreground = color;
 
         self
     }
 
-    pub fn move_origin(&'a mut self, vec: Vec2) -> &'a mut Self {
+    pub fn move_origin(&mut self, vec: Vec2) -> &mut Self {
         self.origin += vec;
 
         self
     }
 
-    pub fn draw_element(&'a mut self, pos: Vec2, value: char) {
+    pub fn draw_char_at_pos(&mut self, pos: Vec2, value: char) -> &mut Self {
         if let Some(element) = self.canvas.get_cell_mut(pos) {
             element.value = value;
-            element.foreground = self.foreground;
-            element.background = self.background;
             element.style = self.style;
+            element.background = self.background;
+            element.foreground = self.foreground;
         }
+
+        self
+    }
+
+    pub fn draw(&mut self, value: char) -> &mut Self {
+        self.draw_char_at_pos(self.origin, value);
+
+        self
+    }
+
+    pub fn draw_text(&mut self, text: &str) -> &mut Self {
+        for (index, value) in text.chars().enumerate() {
+            let pos = Vec2(self.origin.0 + index as i32, self.origin.1);
+
+            self.draw_char_at_pos(pos, value);
+        }
+
+        self
     }
 }

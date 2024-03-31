@@ -6,7 +6,9 @@ mod terminal;
 
 #[cfg(test)]
 mod tests {
-    use crate::{engine::Engine, painter::Painter, space::Vec2, terminal::Window};
+    use crate::{
+        engine::Engine, formatter::Color, painter::Painter, space::Vec2, terminal::Window,
+    };
 
     #[test]
     fn it_works() {
@@ -14,9 +16,12 @@ mod tests {
 
         app.run(|window: &mut Window| {
             Painter::new(&mut window.canvas)
-                .set_foreground(crate::formatter::Color::Red)
-                .set_background(crate::formatter::Color::Cyan)
-                .draw_element(Vec2(2, 2), '3')
+                .set_foreground(Color::Red)
+                .set_background(Color::Cyan)
+                .move_origin(Vec2(2, 5))
+                .draw_text("salam")
+                .reset_origin()
+                .draw_text("Hiiii");
         })
         .unwrap();
     }
