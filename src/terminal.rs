@@ -36,7 +36,7 @@ pub struct Canvas {
 
 impl Default for Canvas {
     fn default() -> Self {
-        Self::new(Vec2(20, 20), &Element::default())
+        Self::new(Vec2(10, 10), &Element::default())
     }
 }
 
@@ -96,7 +96,7 @@ impl View {
             self.write_str(element.background.to_background_ansi_escape_code())?;
         }
         if self.last_element.foreground != element.foreground {
-            self.write_str(element.background.to_foreground_ansi_escape_code())?;
+            self.write_str(element.foreground.to_foreground_ansi_escape_code())?;
         }
         if self.last_element.style != element.style {
             self.write_str(element.style.to_ansi_escape_code())?;
@@ -125,7 +125,7 @@ impl View {
 }
 
 pub struct Window {
-    canvas: Canvas,
+    pub canvas: Canvas,
     view: View,
 }
 
