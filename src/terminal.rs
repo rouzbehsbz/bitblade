@@ -1,4 +1,4 @@
-use std::io::{BufWriter, Result, Write};
+use std::io::{self, BufWriter, Result, Write};
 
 use crate::{
     formatter::{Color, Style},
@@ -32,6 +32,12 @@ pub struct Canvas {
     cells: Vec<Element>,
     default_element: Element,
     dimension: Vec2,
+}
+
+impl Default for Canvas {
+    fn default() -> Self {
+        Self::new(Vec2(20, 20), &Element::default())
+    }
 }
 
 impl Canvas {
@@ -72,21 +78,15 @@ impl Canvas {
     }
 }
 
-struct View<W>
-where
-    W: Write,
-{
+struct View {
     last_element: Element,
-    target: BufWriter<W>,
+    target: BufWriter<io::Stdout>,
 }
 
-impl<W> View<W>
-where
-    W: Write,
-{
-    fn new(target: W) -> Self {
+impl View {
+    fn new() -> Self {
         Self {
-            target: BufWriter::new(target),
+            target: BufWriter::new(io::stdout()),
             last_element: Element::default(),
         }
     }
@@ -124,19 +124,19 @@ where
     }
 }
 
-pub struct Window<W>
-where
-    W: Write,
-{
+pub struct Window {
     canvas: Canvas,
-    view: View<W>,
+    view: View,
 }
 
-impl<W> Window<W>
-where
-    W: Write,
-{
-    pub fn new(canvas: Canvas, view: View<W>) -> Self {
+impl Default for Window {
+    fn default() -> Self {
+        Self::new(Canvas::default(), View::new())
+    }
+}
+
+impl Window {
+    pub fn new(canvas: Canvas, view: View) -> Self {
         Self { canvas, view }
     }
 
