@@ -85,6 +85,8 @@ where
             self.write_str(element.style.to_ansi_escape_code())?;
         }
 
+        self.last_element = element.clone();
+
         self.write_char(element.value)
     }
 
