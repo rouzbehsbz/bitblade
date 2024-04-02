@@ -2,6 +2,14 @@
 name = "bitblade"
 version = "0.1.0"
 edition = "2021"
+authors = ["Rouzbeh Sabzehei <rouzbehsbz@gmail.com>"]
+homepage = "https://github.com/rouzbehsbz/bitblade/"
+repository = "https://github.com/rouzbehsbz/bitblade/"
+readme = "README.md"
+license = "MIT"
+description = "Terminal based Game Engine built in Rust"
+keywords = ["game-engine", "text-based-game", "terminal", "terminal-game-engine", "cli-game-engine"]
+categories = ["game-engines"]
 
 [dependencies]
 device_query = "2.0.0"
