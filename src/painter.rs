@@ -85,4 +85,36 @@ impl<'a> Painter<'a> {
 
         self
     }
+
+    pub fn draw_horizontal_line(&mut self, count: i32, value: char) -> &mut Self {
+        for index in 0..count.abs() {
+            if count > 0 {
+                let pos = Vec2(self.origin.0 + index, self.origin.1);
+
+                self.draw_char_at_pos(pos, value);
+            } else {
+                let pos = Vec2(self.origin.0 - index, self.origin.1);
+
+                self.draw_char_at_pos(pos, value);
+            }
+        }
+
+        self
+    }
+
+    pub fn draw_vertical_line(&mut self, count: i32, value: char) -> &mut Self {
+        for index in 0..count.abs() {
+            if count > 0 {
+                let pos = Vec2(self.origin.0, self.origin.1 + index);
+
+                self.draw_char_at_pos(pos, value);
+            } else {
+                let pos = Vec2(self.origin.0, self.origin.1 - index);
+
+                self.draw_char_at_pos(pos, value);
+            }
+        }
+
+        self
+    }
 }

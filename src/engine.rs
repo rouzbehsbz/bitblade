@@ -5,7 +5,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use crate::terminal::Window;
+use crate::{interface::Keyboard, terminal::Window};
 
 pub struct Config {
     tick_rate: u64,
@@ -25,23 +25,28 @@ impl Config {
 
 pub struct Engine {
     window: Window,
+    keyboard: Keyboard,
     config: Config,
 }
 
 impl Default for Engine {
     fn default() -> Self {
-        Self::new(Config::default(), Window::default())
+        Self::new(Config::default(), Window::default(), Keyboard::new())
     }
 }
 
 impl Engine {
-    pub fn new(config: Config, window: Window) -> Self {
-        Self { config, window }
+    pub fn new(config: Config, window: Window, keyboard: Keyboard) -> Self {
+        Self {
+            config,
+            window,
+            keyboard,
+        }
     }
 
     pub fn run<F>(&mut self, mut tick_update: F) -> Result<()>
     where
-        F: FnMut(&mut Window),
+        F: FnMut(&mut Window, &Keyboard),
     {
         let tick_rate_duration = Duration::from_millis(self.config.tick_rate);
         let mut last_time = Instant::now();
@@ -52,8 +57,9 @@ impl Engine {
             last_time = Instant::now();
 
             self.window.clear()?;
+            self.keyboard.poll_keys();
 
-            tick_update(&mut self.window);
+            tick_update(&mut self.window, &self.keyboard);
 
             self.window.draw()?;
 
