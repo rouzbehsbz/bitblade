@@ -51,9 +51,10 @@ impl Engine {
 
             last_time = Instant::now();
 
+            self.window.clear()?;
+
             tick_update(&mut self.window);
 
-            self.window.clear()?;
             self.window.draw()?;
 
             let sleep_time = tick_rate_duration

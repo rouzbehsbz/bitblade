@@ -31,7 +31,7 @@ impl Default for Element {
 pub struct Canvas {
     cells: Vec<Element>,
     default_element: Element,
-    dimension: Vec2,
+    pub dimension: Vec2,
 }
 
 impl Default for Canvas {
@@ -75,6 +75,13 @@ impl Canvas {
 
     pub fn get_default_element(&self) -> &Element {
         &self.default_element
+    }
+
+    pub fn clear(&mut self) {
+        self.cells
+            .iter_mut()
+            .map(|cell| *cell = self.default_element)
+            .count();
     }
 }
 
@@ -141,6 +148,8 @@ impl Window {
     }
 
     pub fn clear(&mut self) -> Result<()> {
+        self.canvas.clear();
+
         self.view.write_str(CLEAR_SCREEN_ANSI_ESCAPE_STR)?;
         self.view.write_str(MOVE_CURSOR_TO_ORIGIN_ANSI_ESCAPE_STR)?;
 
