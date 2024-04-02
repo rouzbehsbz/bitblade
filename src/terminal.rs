@@ -36,7 +36,7 @@ pub struct Canvas {
 
 impl Default for Canvas {
     fn default() -> Self {
-        Self::new(Vec2(50, 10), &Element::default())
+        Self::new(Vec2(60, 10), &Element::default())
     }
 }
 

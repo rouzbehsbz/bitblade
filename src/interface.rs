@@ -1,8 +1,10 @@
 use device_query::{DeviceQuery, DeviceState, Keycode};
 
+pub type KeyCode = Keycode;
+
 pub struct Keyboard {
     device_state: DeviceState,
-    keys: Vec<Keycode>,
+    keys: Vec<KeyCode>,
 }
 
 impl Keyboard {
@@ -21,7 +23,7 @@ impl Keyboard {
         }
     }
 
-    pub fn is_key_pressed(&self, key: &Keycode) -> bool {
+    pub fn is_key_pressed(&self, key: &KeyCode) -> bool {
         self.keys.contains(key)
     }
 }
