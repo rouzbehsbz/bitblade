@@ -117,4 +117,32 @@ impl<'a> Painter<'a> {
 
         self
     }
+
+    pub fn draw_rectangle(
+        &mut self,
+        vec: Vec2,
+        horizontal_value: char,
+        vertical_value: char,
+    ) -> &mut Self {
+        let width = (vec.0 - self.origin.0).abs();
+        let height = (vec.1 - self.origin.1).abs();
+
+        for index in 0..height {
+            let pos1 = Vec2(self.origin.0, self.origin.1 + index);
+            let pos2 = Vec2(self.origin.0 + width, self.origin.1 + index);
+
+            self.draw_char_at_pos(pos1, vertical_value);
+            self.draw_char_at_pos(pos2, vertical_value);
+        }
+
+        for index in 0..width {
+            let pos1 = Vec2(self.origin.0 + index, self.origin.1);
+            let pos2 = Vec2(self.origin.0 + index, self.origin.1 + height);
+
+            self.draw_char_at_pos(pos1, horizontal_value);
+            self.draw_char_at_pos(pos2, horizontal_value);
+        }
+
+        self
+    }
 }

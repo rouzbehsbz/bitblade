@@ -41,7 +41,7 @@ impl Default for Canvas {
 }
 
 impl Canvas {
-    fn new(dimension: Vec2, default_element: &Element) -> Self {
+    pub fn new(dimension: Vec2, default_element: &Element) -> Self {
         let mut cells = Vec::new();
 
         cells.resize((dimension.0 * dimension.1) as usize, *default_element);
@@ -53,11 +53,11 @@ impl Canvas {
         }
     }
 
-    fn is_cell_exists(&self, pos: Vec2) -> bool {
+    pub fn is_cell_exists(&self, pos: Vec2) -> bool {
         pos.0 >= 0 && pos.1 >= 0 && pos.0 < self.dimension.0 && pos.1 < self.dimension.1
     }
 
-    fn get_cell(&self, pos: Vec2) -> Option<&Element> {
+    pub fn get_cell(&self, pos: Vec2) -> Option<&Element> {
         if self.is_cell_exists(pos) {
             Some(&self.cells[(pos.1 * self.dimension.0 + pos.0) as usize])
         } else {
@@ -91,14 +91,14 @@ struct View {
 }
 
 impl View {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             target: BufWriter::new(io::stdout()),
             last_element: Element::default(),
         }
     }
 
-    fn write_element(&mut self, element: &Element) -> Result<usize> {
+    pub fn write_element(&mut self, element: &Element) -> Result<usize> {
         if self.last_element.background != element.background {
             self.write_str(element.background.to_background_ansi_escape_code())?;
         }
@@ -114,19 +114,19 @@ impl View {
         self.write_char(element.value)
     }
 
-    fn write_char(&mut self, character: char) -> Result<usize> {
+    pub fn write_char(&mut self, character: char) -> Result<usize> {
         let byte_format: u8 = character as u8;
 
         self.target.write(&[byte_format])
     }
 
-    fn write_str(&mut self, string: &str) -> Result<usize> {
+    pub fn write_str(&mut self, string: &str) -> Result<usize> {
         let byte_format = string.as_bytes();
 
         self.target.write(byte_format)
     }
 
-    fn flush(&mut self) -> Result<()> {
+    pub fn flush(&mut self) -> Result<()> {
         self.target.flush()
     }
 }
