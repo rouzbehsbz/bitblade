@@ -197,7 +197,7 @@ impl Game {
 
             self.ball = Ball::new(self.ball.initial_pos)
         } else if self.ball.pos.0 >= borders_dimension.0 {
-            self.player2.score += 1;
+            self.player1.score += 1;
 
             self.ball = Ball::new(self.ball.initial_pos)
         }
